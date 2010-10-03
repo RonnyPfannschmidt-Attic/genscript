@@ -17,9 +17,10 @@ def test_metadata(dist_class):
     }
 
     dist = dist_class(input)
-    extracted = distribution_metadata(dist)
+    extracted = distribution_metadata(dist.metadata)
     assert extracted == {
         'version': '1.0',
         'author': 'Test <test@example.com>',
         'url': None,
+        'maintainer': None,
     }

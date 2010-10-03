@@ -13,19 +13,13 @@ def grab_person(dist, attr):
 
     if name and mail:
         return '%s <%s>' % (name, mail)
-    elif name:
-        return name
-    else:
-        return mail
+    return name or mail
 
-
-def distribution_metadata(dist):
-    metadata = dist.metadata
-    author = grab_person(metadata, 'author')
-    version = metadata.version
+def distribution_metadata(meta):
     return {
-        'author': author,
-        'version': version,
-        'url': grab_attr(metadata, 'url'),
+        'author': grab_person(meta, 'author'),
+        'maintainer': grab_person(meta, 'maintainer'),
+        'version': meta.version,
+        'url': grab_attr(meta, 'url'),
     }
 
