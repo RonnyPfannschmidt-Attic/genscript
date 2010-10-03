@@ -5,7 +5,7 @@ def metadata_lines(metadata):
 def update_script(source, metadata):
     lines = source.splitlines(True)
     for index, line in enumerate(lines):
-        line = line.strip()
+        line = line.lstrip()
         if line and line[0] == '#' and 'Genscript Metadata' in line:
             if not line[-1] == '\n':
                 lines[index] = line + '\n'

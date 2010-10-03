@@ -14,6 +14,16 @@ def test_update_script():
     assert "\nversion = '1.3'\n" in result
     assert 'ending' in result
 
+def test_append_missing_newline():
+    script = '# Genscript Metadata'
+    result = update_script(script, {})
+    assert result == '# Genscript Metadata\n'
+
+    script = '# Genscript Metadata\n'
+    result = update_script(script, {})
+    assert result == '# Genscript Metadata\n'
+
+
 def test_update_fails_for_missing():
     py.test.raises(ValueError, update_script, 'test_line\n', {})
 
