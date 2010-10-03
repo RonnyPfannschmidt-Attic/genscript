@@ -10,4 +10,5 @@ syntax:glob
 *.class
 
 .tox
+.coverage
 *.egg-info
