@@ -22,8 +22,6 @@ class SdistModuleMixin:
         ('script', None, 'the script to enrich')
     ]
 
-    def __init__(self, dist):
-        self.__dist = dist
 
     def initialize_options(self):
         self.script = None
@@ -32,6 +30,4 @@ class SdistModuleMixin:
         pass
 
     def run(self):
-
-        self.__dist.dist_files.append(("sdist_module", ''))
-        
+        self.distribution.dist_files.append(('sdist_module', '', self.script))
