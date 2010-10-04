@@ -15,3 +15,23 @@ def update_script(source, metadata):
     lines[index+1:index] = metadata_lines(metadata)
     return ''.join(lines)
 
+
+class SdistModuleMixin:
+
+    user_options = [
+        ('script', None, 'the script to enrich')
+    ]
+
+    def __init__(self, dist):
+        self.__dist = dist
+
+    def initialize_options(self):
+        self.script = None
+
+    def finalize_options(self):
+        pass
+
+    def run(self):
+
+        self.__dist.dist_files.append(("sdist_module", ''))
+        
