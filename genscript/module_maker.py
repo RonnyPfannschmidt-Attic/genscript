@@ -1,6 +1,8 @@
+import os
+from genscript.utils import distribution_metadata
+
 def metadata_lines(metadata):
     return ['%s = %r\n'%item for item in metadata.items()]
-
 
 def update_script(source, metadata):
     lines = source.splitlines(True)
@@ -19,15 +21,39 @@ def update_script(source, metadata):
 class SdistModuleMixin:
 
     user_options = [
-        ('script', None, 'the script to enrich')
+        ('module', None, 'the module to enrich')
     ]
 
 
     def initialize_options(self):
-        self.script = None
+        self.module = None
 
     def finalize_options(self):
+        #XXX: read py_modules
         pass
 
     def run(self):
-        self.distribution.dist_files.append(('sdist_module', '', self.script))
+        basename =os.path.basename(self.module)
+        base, ext = os.path.splitext(basename)
+        new_name = '%s-%s%s'%(base, self.distribution.version, ext)
+        self.distribution.dist_files.append(('sdist_module', '', new_name))
+        sdist = self.distribution.get_command_obj('sdist')
+        sdist.ensure_finalized()
+        dist_dir = sdist.dist_dir
+
+        infile = open(self.module)
+        try:
+            unprocessed_source = infile.read()
+        finally:
+            infile.close()
+        outpath = os.path.join(dist_dir, new_name)
+
+        metadata = distribution_metadata(self.distribution.metadata)
+        processed_source = update_script(unprocessed_source, metadata)
+
+        outfile = open(outpath, 'w')
+        try:
+            outfile.write(processed_source)
+        finally:
+            outfile.close()
+
