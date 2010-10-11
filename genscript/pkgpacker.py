@@ -44,6 +44,7 @@ def generate_script(entry, packages):
     tmpl = py.path.local(__file__).dirpath().join('standalonetemplate.py')
     exe = tmpl.read()
     exe = exe.replace('@SOURCES@', data)
+    exe = exe.replace('@ENTRY@', entry)
     return exe
 
 
