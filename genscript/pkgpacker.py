@@ -1,4 +1,7 @@
 import py
+import pickle
+import zlib
+import base64
 
 def find_toplevel(name):
     for syspath in py.std.sys.path:
@@ -19,3 +22,21 @@ def pkg_to_mapping(name):
         pkg = pkgname(name, toplevel, pyfile)
         name2src[pkg] = pyfile.read()
     return name2src
+
+
+def compress_mapping(mapping):
+    data = pickle.dumps(mapping, 2)
+    data = zlib.compress(data, 9)
+    data = base64.encodestring(data)
+    data = data.decode('ascii')
+    return data
+
+
+def compress_packages(names):
+    mapping = {}
+    for name in names:
+        mapping.update(pkg_to_mapping(name))
+    return compress_mapping(mapping)
+
+
+
