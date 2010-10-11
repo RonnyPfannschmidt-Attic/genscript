@@ -21,7 +21,7 @@ def update_script(source, metadata):
 class SdistModuleMixin:
 
     user_options = [
-        ('module', None, 'the module to enrich')
+        ('module=', None, 'the module to enrich')
     ]
 
 
@@ -33,9 +33,10 @@ class SdistModuleMixin:
         pass
 
     def run(self):
-        basename =os.path.basename(self.module)
+        metadata = distribution_metadata(self.distribution.metadata)
+        basename = os.path.basename(self.module)
         base, ext = os.path.splitext(basename)
-        new_name = '%s-%s%s'%(base, self.distribution.version, ext)
+        new_name = '%s-%s%s'%(base, metadata['version'], ext)
         self.distribution.dist_files.append(('sdist_module', '', new_name))
         sdist = self.distribution.get_command_obj('sdist')
         sdist.ensure_finalized()
@@ -46,11 +47,14 @@ class SdistModuleMixin:
             unprocessed_source = infile.read()
         finally:
             infile.close()
+
+        if not os.path.exists(dist_dir):
+            os.makedirs(dist_dir)
+
+        processed_source = update_script(unprocessed_source, metadata)
         outpath = os.path.join(dist_dir, new_name)
 
-        metadata = distribution_metadata(self.distribution.metadata)
-        processed_source = update_script(unprocessed_source, metadata)
-
+        print metadata
         outfile = open(outpath, 'w')
         try:
             outfile.write(processed_source)
