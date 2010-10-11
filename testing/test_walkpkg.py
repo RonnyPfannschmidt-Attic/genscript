@@ -4,6 +4,7 @@ from genscript import pkgpacker
 
 py_pkg = py.path.local(py.__file__).pypkgpath()
 
+@py.test.mark.skipif(py_pkg is None, reason='magical pylib import')
 def test_find_toplevel():
     pylib = find_toplevel('py')
     assert pylib == py_pkg
