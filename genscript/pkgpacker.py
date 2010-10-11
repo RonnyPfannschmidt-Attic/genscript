@@ -39,4 +39,11 @@ def compress_packages(names):
     return compress_mapping(mapping)
 
 
+def generate_script(entry, packages):
+    data = compress_packages(packages)
+    tmpl = py.path.local(__file__).dirpath().join('standalonetemplate.py')
+    exe = tmpl.read()
+    exe = exe.replace('@SOURCES@', data)
+    return exe
+
 
