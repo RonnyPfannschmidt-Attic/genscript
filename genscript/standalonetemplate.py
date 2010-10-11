@@ -60,4 +60,4 @@ if __name__ == "__main__":
     sys.meta_path.append(importer)
 
     import py
-    py.cmdline.pytest()
+    py.test.cmdline.main()
