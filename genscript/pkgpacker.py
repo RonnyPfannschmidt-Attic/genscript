@@ -48,3 +48,20 @@ def generate_script(entry, packages):
     return exe
 
 
+def pytest_addoption(parser):
+    group = parser.getgroup("debugconfig")
+    group.addoption("--genscript", action="store", default=None,
+        dest="genscript", metavar="path",
+        help="create standalone py.test script at given target path.")
+
+def pytest_cmdline_main(config):
+    genscript = config.getvalue("genscript")
+    if genscript:
+        script = generate_script(
+            'import py; py.test.cmdline.main()',
+            ['py', 'pytest'],
+        )
+
+        genscript = py.path.local(genscript)
+        genscript.write(script)
+        return 0
