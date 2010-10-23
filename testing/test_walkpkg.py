@@ -27,3 +27,12 @@ def test_pkg_to_mapping(tmpdir, monkeypatch):
     }
     assert mapping == expected
 
+def test_pkg_to_mapping_for_module(tmpdir, monkeypatch):
+    monkeypatch.setattr(pkgpacker, 'find_toplevel', lambda x:test)
+    test = tmpdir.join('test.py')
+    test.write('#test\n')
+
+    mapping = pkg_to_mapping('test')
+    assert mapping == { 'test': '#test\n' }
+
+

@@ -9,6 +9,9 @@ def find_toplevel(name):
         lib = base/name
         if lib.check(dir=1):
             return lib
+        mod = lib + '.py'
+        if mod.check(file=1):
+            return mod
     raise LookupError(name)
 
 def pkgname(toplevel, rootpath, path):
@@ -17,6 +20,9 @@ def pkgname(toplevel, rootpath, path):
 
 def pkg_to_mapping(name):
     toplevel = find_toplevel(name)
+    if toplevel.check(file=1):
+        return {name: toplevel.read()}
+
     name2src = {}
     for pyfile in toplevel.visit('*.py'):
         pkg = pkgname(name, toplevel, pyfile)
